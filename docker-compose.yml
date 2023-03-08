@@ -1,0 +1,38 @@
+version: '3.9'
+services:
+
+# Сервис контейнер с БД
+  db:
+    container_name: pg_container
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: animal-chipization
+    ports:
+      - "5432:5432"
+
+# Сервис контенер с автотестами
+  tests:
+    image: mrexpen/planet_olymp_phase1
+    pull_policy: always
+    ports:
+      - "8090:8080"
+    depends_on:
+      - webapi
+    environment:
+      SERVER_URL: http://webapi:8080
+      STAGE: all
+
+  webapi:
+    build: ./
+    image: webapi
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+        SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/animal-chipization
+        SPRING_DATASOURCE_USERNAME: root
+        SPRING_DATASOURCE_PASSWORD: root
