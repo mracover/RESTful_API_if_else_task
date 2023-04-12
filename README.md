@@ -20,4 +20,7 @@
 <p>
 https://github.com/mracover/RESTful_API_if_else_task/files/10932304/if-else_technical_task_stage-1_upd.pdf
 </p>
+_____________
 
+<p>Результаты первого тура:<p>
+![2023-04-12_20-38-38](https://user-images.githubusercontent.com/79517707/231509478-974f20b3-4a69-4aca-b7fc-62474041161d.png)
