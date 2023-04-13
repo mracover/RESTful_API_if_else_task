@@ -10,11 +10,12 @@ import com.mracover.if_else_task.components.LifeStatusAnimal;
 import com.mracover.if_else_task.mappers.request.RequestGetAndPutAnimalMapper;
 import com.mracover.if_else_task.mappers.request.RequestPostAnimalMapper;
 import com.mracover.if_else_task.mappers.response.ResponseAnimalMapper;
-import com.mracover.if_else_task.models.Animal;
+import com.mracover.if_else_task.models.animalModels.Animal;
 import com.mracover.if_else_task.services.AnimalService;
 import com.mracover.if_else_task.validators.ValidateString;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -81,6 +82,7 @@ public class AnimalController {
         return new ResponseEntity<>(responseAnimalMapper.animalListToListDTO(animalList), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CHIPPER')")
     @PostMapping
     public ResponseEntity<ResponseAnimalDTO> addNewAnimal(@Valid @RequestBody RequestPostAnimalDTO requestPostAnimalDTO) {
         for (Long s : requestPostAnimalDTO.getAnimalTypes()) {
@@ -96,6 +98,7 @@ public class AnimalController {
         return new ResponseEntity<>(responseAnimalMapper.animalToDTO(animal), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CHIPPER')")
     @PostMapping("/{animalId}/types/{typeId}")
     public ResponseEntity<ResponseAnimalDTO> addTypeAnimalToAnimal(@PathVariable("animalId") @NotNull @Positive Long animalId,
                                                                    @PathVariable("typeId") @NotNull @Positive Long typeId) {
@@ -103,6 +106,7 @@ public class AnimalController {
         return new ResponseEntity<>(responseAnimalMapper.animalToDTO(animal), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CHIPPER')")
     @PutMapping("/{animalId}")
     public ResponseEntity<ResponseAnimalDTO> updateAnimal(@PathVariable("animalId") @NotNull @Positive Long id,
                                                           @Valid @RequestBody RequestPutAnimalDTO requestPutAnimalDTO) {
@@ -111,18 +115,21 @@ public class AnimalController {
         return new ResponseEntity<>(responseAnimalMapper.animalToDTO(animalService.updateAnimal(animal)), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CHIPPER')")
     @PutMapping("/{animalId}/types")
     public ResponseEntity<ResponseAnimalDTO> updateTypeAnimal(@PathVariable("animalId") @NotNull @Positive Long id,
                                                               @Valid @RequestBody RequestPutAnimalTypeDTO requestPutAnimalTypeDTO) {
         return new ResponseEntity<>(responseAnimalMapper.animalToDTO(animalService.updateAnimalType(id, requestPutAnimalTypeDTO)), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{animalId}")
     public ResponseEntity<Void> deleteAnimal(@PathVariable("animalId") @NotNull @Positive Long id) {
         animalService.deleteAnimalById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CHIPPER')")
     @DeleteMapping("/{animalId}/types/{typeId}")
     public ResponseEntity<ResponseAnimalDTO> deleteAnimalTypeFromAnimal(@PathVariable("animalId") @NotNull @Positive Long animalId,
                                                                         @PathVariable("typeId") @NotNull @Positive Long typeId) {

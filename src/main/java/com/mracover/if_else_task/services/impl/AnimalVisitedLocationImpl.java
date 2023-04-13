@@ -2,9 +2,9 @@ package com.mracover.if_else_task.services.impl;
 
 import com.mracover.if_else_task.components.LifeStatusAnimal;
 import com.mracover.if_else_task.exception_handler.exception.NoSuchDataException;
-import com.mracover.if_else_task.models.Animal;
-import com.mracover.if_else_task.models.AnimalVisitedLocation;
-import com.mracover.if_else_task.models.LocationPoint;
+import com.mracover.if_else_task.models.animalModels.Animal;
+import com.mracover.if_else_task.models.animalModels.locationModels.AnimalVisitedLocation;
+import com.mracover.if_else_task.models.animalModels.locationModels.LocationPoint;
 import com.mracover.if_else_task.repositories.AnimalRepository;
 import com.mracover.if_else_task.repositories.AnimalVisitedLocationRepository;
 import com.mracover.if_else_task.services.AnimalService;
@@ -46,15 +46,15 @@ public class AnimalVisitedLocationImpl implements AnimalVisitedLocationService {
                         Sort.by("dateTimeOfVisitLocationPoint").ascending()).stream().skip(from).limit(size).toList();
     }
 
-    public Specification<AnimalVisitedLocation> getSpecFromDatesAndExample(
+    private Specification<AnimalVisitedLocation> getSpecFromDatesAndExample(
             OffsetDateTime from, OffsetDateTime to, Long animalId) {
         return (Specification<AnimalVisitedLocation>) (root, query, builder) -> {
             final List<javax.persistence.criteria.Predicate> predicates = new ArrayList<>();
             if (from != null) {
-                predicates.add(builder.greaterThan(root.get("dateTimeOfVisitLocationPoint"), from));
+                predicates.add(builder.greaterThanOrEqualTo(root.get("dateTimeOfVisitLocationPoint"), from.toString()));
             }
             if (to != null) {
-                predicates.add(builder.lessThan(root.get("dateTimeOfVisitLocationPoint"), to));
+                predicates.add(builder.lessThanOrEqualTo(root.get("dateTimeOfVisitLocationPoint"), to.toString()));
             }
             if (animalId != null) {
                 predicates.add(builder.equal(root.get("animal"),animalId));
@@ -82,7 +82,9 @@ public class AnimalVisitedLocationImpl implements AnimalVisitedLocationService {
             throw new ValidationException();
         }
 
-        return animalVisitedLocationRepository.save(new AnimalVisitedLocation(null, OffsetDateTime.now(), OffsetDateTime.now().getNano(), locationPoint, animal));
+        OffsetDateTime dateTime = OffsetDateTime.now();
+
+        return animalVisitedLocationRepository.save(new AnimalVisitedLocation(null, dateTime.toString(), locationPoint, animal));
     }
 
     @Override

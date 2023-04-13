@@ -1,6 +1,6 @@
 package com.mracover.if_else_task.services;
 
-import com.mracover.if_else_task.models.Account;
+import com.mracover.if_else_task.models.userModels.Account;
 
 import java.util.List;
 

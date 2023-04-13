@@ -1,8 +1,6 @@
 package com.mracover.if_else_task.services;
 
-import com.mracover.if_else_task.components.AccountDetails;
 import com.mracover.if_else_task.exception_handler.exception.NoSuchDataException;
-import com.mracover.if_else_task.models.Account;
 import com.mracover.if_else_task.repositories.AccountRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,8 +18,7 @@ public class CustomUserDetailService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String email)  {
-        Account account = accountRepository.findAccountByEmail(email).orElseThrow(() ->
+        return accountRepository.findAccountByEmail(email).orElseThrow(() ->
             new NoSuchDataException("Пользователь не найден"));
-        return new AccountDetails(account);
     }
 }

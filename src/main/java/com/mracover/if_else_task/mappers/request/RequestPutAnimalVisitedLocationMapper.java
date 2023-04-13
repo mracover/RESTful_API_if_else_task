@@ -1,8 +1,8 @@
 package com.mracover.if_else_task.mappers.request;
 
 import com.mracover.if_else_task.DTO.request.RequestPutAnimalVisitedLocationDTO;
-import com.mracover.if_else_task.models.AnimalVisitedLocation;
-import com.mracover.if_else_task.models.LocationPoint;
+import com.mracover.if_else_task.models.animalModels.locationModels.AnimalVisitedLocation;
+import com.mracover.if_else_task.models.animalModels.locationModels.LocationPoint;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

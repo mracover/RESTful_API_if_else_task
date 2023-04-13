@@ -1,9 +1,9 @@
 package com.mracover.if_else_task.mappers.response;
 
 import com.mracover.if_else_task.DTO.response.ResponseAnimalDTO;
-import com.mracover.if_else_task.models.Animal;
-import com.mracover.if_else_task.models.AnimalType;
-import com.mracover.if_else_task.models.AnimalVisitedLocation;
+import com.mracover.if_else_task.models.animalModels.Animal;
+import com.mracover.if_else_task.models.animalModels.AnimalType;
+import com.mracover.if_else_task.models.animalModels.locationModels.AnimalVisitedLocation;
 import org.mapstruct.*;
 
 import java.util.ArrayList;

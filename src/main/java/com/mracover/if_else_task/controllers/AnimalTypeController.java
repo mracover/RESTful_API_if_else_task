@@ -4,10 +4,11 @@ import com.mracover.if_else_task.DTO.request.RequestAnimalTypeDTO;
 import com.mracover.if_else_task.DTO.response.ResponseAnimalTypeDTO;
 import com.mracover.if_else_task.mappers.request.RequestAnimalTypeMapper;
 import com.mracover.if_else_task.mappers.response.ResponseAnimalTypeMapper;
-import com.mracover.if_else_task.models.AnimalType;
+import com.mracover.if_else_task.models.animalModels.AnimalType;
 import com.mracover.if_else_task.services.AnimalTypeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,12 +39,14 @@ public class AnimalTypeController {
         return new ResponseEntity<>(responseAnimalTypeMapper.AnimalTypeToDTO(animalType), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CHIPPER')")
     @PostMapping
     public ResponseEntity<ResponseAnimalTypeDTO> addNewAnimalType(@Valid @RequestBody RequestAnimalTypeDTO requestAnimalTypeDTO) {
         AnimalType animalType = animalTypeService.addNewAnimalType(requestAnimalTypeMapper.dtoToAnimalType(requestAnimalTypeDTO));
         return new ResponseEntity<>(responseAnimalTypeMapper.AnimalTypeToDTO(animalType), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'CHIPPER')")
     @PutMapping("/{typeId}")
     public ResponseEntity<ResponseAnimalTypeDTO> updateAnimalType(@PathVariable("typeId") @NotNull @Positive Long id,
                                                                   @Valid @RequestBody RequestAnimalTypeDTO requestAnimalTypeDTO) {
@@ -52,6 +55,7 @@ public class AnimalTypeController {
         return new ResponseEntity<>(responseAnimalTypeMapper.AnimalTypeToDTO(animalType), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{typeId}")
     public ResponseEntity<Void> deleteAnimalType(@PathVariable("typeId") @NotNull @Positive Long id) {
         animalTypeService.deleteAnimalTypeById(id);

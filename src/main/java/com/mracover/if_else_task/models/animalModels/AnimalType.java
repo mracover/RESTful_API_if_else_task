@@ -1,4 +1,4 @@
-package com.mracover.if_else_task.models;
+package com.mracover.if_else_task.models.animalModels;
 
 
 import javax.persistence.*;

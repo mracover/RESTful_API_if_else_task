@@ -7,15 +7,17 @@ services:
     image: postgres:latest
     restart: always
     environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
       POSTGRES_DB: animal-chipization
     ports:
       - "5432:5432"
+    volumes:
+      - /var/lib/postgresql/data/
 
 # Сервис контенер с автотестами
   tests:
-    image: mrexpen/planet_olymp_phase1
+    image: mrexpen/planet_olymp_phase2
     pull_policy: always
     ports:
       - "8090:8080"
@@ -34,5 +36,5 @@ services:
       - db
     environment:
         SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/animal-chipization
-        SPRING_DATASOURCE_USERNAME: root
-        SPRING_DATASOURCE_PASSWORD: root
+        SPRING_DATASOURCE_USERNAME: user
+        SPRING_DATASOURCE_PASSWORD: password

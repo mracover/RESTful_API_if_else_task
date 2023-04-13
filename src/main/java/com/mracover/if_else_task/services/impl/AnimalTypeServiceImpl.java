@@ -2,7 +2,7 @@ package com.mracover.if_else_task.services.impl;
 
 import com.mracover.if_else_task.exception_handler.exception.ConflictException;
 import com.mracover.if_else_task.exception_handler.exception.NoSuchDataException;
-import com.mracover.if_else_task.models.AnimalType;
+import com.mracover.if_else_task.models.animalModels.AnimalType;
 import com.mracover.if_else_task.repositories.AnimalTypeRepository;
 import com.mracover.if_else_task.services.AnimalTypeService;
 import org.springframework.stereotype.Service;

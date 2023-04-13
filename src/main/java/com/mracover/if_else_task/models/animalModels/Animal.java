@@ -1,14 +1,20 @@
-package com.mracover.if_else_task.models;
+package com.mracover.if_else_task.models.animalModels;
 
+import com.mracover.if_else_task.models.animalModels.locationModels.AnimalVisitedLocation;
+import com.mracover.if_else_task.models.userModels.Account;
+import com.mracover.if_else_task.models.animalModels.locationModels.LocationPoint;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -27,7 +33,7 @@ public class Animal {
             CascadeType.DETACH,
             CascadeType.MERGE,
             CascadeType.PERSIST
-    })
+            })
     @JoinTable(name = "animal_types_manyToMany",
             joinColumns = @JoinColumn(name = "animalType_id"),
             inverseJoinColumns = @JoinColumn(name = "animal_id"))
@@ -59,20 +65,25 @@ public class Animal {
             CascadeType.DETACH,
             CascadeType.MERGE,
             CascadeType.PERSIST
-    })
+            })
+    @Fetch(FetchMode.JOIN)
     @JoinColumn(name = "chipperId")
     private Account chipperId;
 
-    @ManyToOne(cascade = {
-            CascadeType.REFRESH,
-            CascadeType.DETACH,
-            CascadeType.MERGE,
-            CascadeType.PERSIST
-    })
+    @ManyToOne(
+            cascade = {
+                CascadeType.REFRESH,
+                CascadeType.DETACH,
+                CascadeType.MERGE,
+                CascadeType.PERSIST
+            })
     @JoinColumn(name = "chippingLocationId")
     private LocationPoint chippingLocationId;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "animal", fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL,
+            mappedBy = "animal",
+            orphanRemoval = true)
+    @Fetch(FetchMode.JOIN)
     private List<AnimalVisitedLocation> animalVisitedLocationList;
 
     @Column
@@ -80,4 +91,17 @@ public class Animal {
 
     @Column
     private Integer deathDateTimeNano;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Animal animal = (Animal) o;
+        return id.equals(animal.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

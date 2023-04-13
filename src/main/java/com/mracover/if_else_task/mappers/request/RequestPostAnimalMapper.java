@@ -1,10 +1,10 @@
 package com.mracover.if_else_task.mappers.request;
 
 import com.mracover.if_else_task.DTO.request.animal.RequestPostAnimalDTO;
-import com.mracover.if_else_task.models.Account;
-import com.mracover.if_else_task.models.Animal;
-import com.mracover.if_else_task.models.AnimalType;
-import com.mracover.if_else_task.models.LocationPoint;
+import com.mracover.if_else_task.models.userModels.Account;
+import com.mracover.if_else_task.models.animalModels.Animal;
+import com.mracover.if_else_task.models.animalModels.AnimalType;
+import com.mracover.if_else_task.models.animalModels.locationModels.LocationPoint;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

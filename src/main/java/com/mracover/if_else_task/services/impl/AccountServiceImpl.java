@@ -3,9 +3,10 @@ package com.mracover.if_else_task.services.impl;
 import com.mracover.if_else_task.exception_handler.exception.ConflictException;
 import com.mracover.if_else_task.exception_handler.exception.ForbiddenException;
 import com.mracover.if_else_task.exception_handler.exception.NoSuchDataException;
-import com.mracover.if_else_task.models.Account;
+import com.mracover.if_else_task.models.userModels.Account;
 import com.mracover.if_else_task.repositories.AccountRepository;
 import com.mracover.if_else_task.services.AccountService;
+import com.mracover.if_else_task.services.RoleService;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Sort;
@@ -20,11 +21,14 @@ import java.util.List;
 public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
+    private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
 
     public AccountServiceImpl(AccountRepository accountRepository,
+                              RoleService roleService,
                               PasswordEncoder passwordEncoder) {
         this.accountRepository = accountRepository;
+        this.roleService = roleService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -55,6 +59,9 @@ public class AccountServiceImpl implements AccountService {
         }
 
         account.setPassword(passwordEncoder.encode(account.getPassword()));
+        if (account.getRole().getId() == null) {
+            account.setRole(roleService.findRoleByRole(account.getRole().getRole()));
+        }
         return accountRepository.save(account);
     }
 
@@ -65,6 +72,7 @@ public class AccountServiceImpl implements AccountService {
                 new ForbiddenException("Пользователь не найден"));
 
         account.setPassword(passwordEncoder.encode(account.getPassword()));
+        account.setRole(roleService.findRoleByRole(account.getRole().getRole()));
         account.setAnimalList(account1.getAnimalList());
         return accountRepository.save(account);
     }
@@ -73,7 +81,7 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     public void deleteAccountById(Integer id) {
         Account account = accountRepository.findById(id).orElseThrow(() ->
-                new ForbiddenException("Пользователь не найден"));
+                new NoSuchDataException("Пользователь не найден"));
 
         if (!account.getAnimalList().isEmpty()) {
             throw new ValidationException();

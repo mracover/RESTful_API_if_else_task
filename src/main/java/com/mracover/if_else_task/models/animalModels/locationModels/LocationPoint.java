@@ -1,7 +1,8 @@
-package com.mracover.if_else_task.models;
+package com.mracover.if_else_task.models.animalModels.locationModels;
 
 import javax.persistence.*;
 
+import com.mracover.if_else_task.models.animalModels.Animal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "location")
+@Table(name = "locations")
 public class LocationPoint {
 
     @Id
@@ -26,12 +27,14 @@ public class LocationPoint {
     @Column
     private double longitude;
 
-    @OneToMany(cascade = {
-            CascadeType.REFRESH,
-            CascadeType.DETACH,
-            CascadeType.MERGE,
-            CascadeType.PERSIST
-    },mappedBy = "chippingLocationId")
+    @OneToMany(
+            cascade = {
+                    CascadeType.REFRESH,
+                    CascadeType.DETACH,
+                    CascadeType.MERGE,
+                    CascadeType.PERSIST
+            },
+            mappedBy = "chippingLocationId")
     private List<Animal> animals;
 
 }

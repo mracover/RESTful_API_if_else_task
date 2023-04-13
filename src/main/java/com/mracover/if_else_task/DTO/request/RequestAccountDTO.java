@@ -1,5 +1,7 @@
 package com.mracover.if_else_task.DTO.request;
 
+import com.mracover.if_else_task.components.RoleAccount;
+import com.mracover.if_else_task.validators.ValidateString;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,16 +18,19 @@ public class RequestAccountDTO {
 
     private Integer id;
 
-    @NotBlank
+    @NotBlank(message = "Неккоректное имя: null or empty name")
     private String firstName;
 
-    @NotBlank
+    @NotBlank(message = "Неккоректная фамилия: null or empty lastName")
     private String lastName;
 
-    @NotBlank
+    @NotBlank(message = "Неккоректный email: null or empty email")
     @Email
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "Неккоректный пароль: null or empty password")
     private String password;
+
+    @ValidateString(enumClazz = RoleAccount.class)
+    private String role;
 }

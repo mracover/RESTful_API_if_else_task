@@ -2,17 +2,18 @@ package com.mracover.if_else_task.controllers;
 
 import com.mracover.if_else_task.DTO.request.RequestAccountDTO;
 import com.mracover.if_else_task.DTO.response.ResponseAccountDTO;
-import com.mracover.if_else_task.exception_handler.exception.ForbiddenException;
 import com.mracover.if_else_task.mappers.request.RequestAccountMapper;
 import com.mracover.if_else_task.mappers.response.ResponseAccountMapper;
-import com.mracover.if_else_task.models.Account;
+import com.mracover.if_else_task.models.userModels.Account;
 import com.mracover.if_else_task.services.AccountService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.ValidationException;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -36,12 +37,15 @@ public class AccountController {
         this.requestAccountMapper = requestAccountMapper;
     }
 
+    @PreAuthorize(value = "(hasAnyAuthority('USER', 'CHIPPER') and" +
+            " accountServiceImpl.findAccountByEmail(principal.username).id == id) or hasAuthority('ADMIN')")
     @GetMapping("/{accountId}")
     public ResponseEntity<ResponseAccountDTO> getAccountById(@PathVariable("accountId") @NotNull @Positive Integer id) {
         Account account = accountService.findAccountById(id);
         return new ResponseEntity<>(responseAccountMapper.accountToDTO(account), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/search")
     public ResponseEntity<List<ResponseAccountDTO>> getAccountsByParameters(
             @RequestParam(value = "firstName", required = false) String firstName,
@@ -57,26 +61,33 @@ public class AccountController {
         return new ResponseEntity<>(responseAccountMapper.toListAccountDTO(accounts), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping
+    public ResponseEntity<ResponseAccountDTO> addNewAccount(@Valid @RequestBody RequestAccountDTO requestAccountDTO) {
+        if (requestAccountDTO.getRole() == null) {
+            throw new ValidationException("Вы не указали роль");
+        }
+
+        Account account = accountService.addNewAccount(requestAccountMapper.dtoToAccount(requestAccountDTO));
+        return new ResponseEntity<>(responseAccountMapper.accountToDTO(account), HttpStatus.CREATED);
+    }
+
+    @PreAuthorize(value = "(hasAnyAuthority('USER', 'CHIPPER') and " +
+            "accountServiceImpl.findAccountByEmail(principal.name).id == id) or hasAuthority('ADMIN')")
     @PutMapping("/{accountId}")
     public ResponseEntity<ResponseAccountDTO> updateAccount(@PathVariable("accountId") @NotNull @Positive Integer id,
                                                             @Valid @RequestBody RequestAccountDTO requestAccountDTO,
                                                             Principal principal) {
-        if (!id.equals(accountService.findAccountByEmail(principal.getName()).getId())) {
-            throw new ForbiddenException("Обновление не своего аккаунта");
-        }
-
         requestAccountDTO.setId(id);
         Account account = accountService.updateAccount(requestAccountMapper.dtoToAccount(requestAccountDTO));
         return new ResponseEntity<>(responseAccountMapper.accountToDTO(account), HttpStatus.OK);
     }
 
+    @PreAuthorize(value = "(hasAnyAuthority('USER', 'CHIPPER') and " +
+            "accountServiceImpl.findAccountByEmail(principal.name).id == id) or hasAuthority('ADMIN')")
     @DeleteMapping("/{accountId}")
     public ResponseEntity<Void> deleteAccount(@PathVariable("accountId") @NotNull @Positive Integer id,
                                               Principal principal) {
-        if (!id.equals(accountService.findAccountByEmail(principal.getName()).getId())) {
-            throw new ForbiddenException("Удаление не своего аккаунта");
-        }
-
         accountService.deleteAccountById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

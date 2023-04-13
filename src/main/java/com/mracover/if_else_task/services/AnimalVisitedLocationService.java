@@ -1,6 +1,6 @@
 package com.mracover.if_else_task.services;
 
-import com.mracover.if_else_task.models.AnimalVisitedLocation;
+import com.mracover.if_else_task.models.animalModels.locationModels.AnimalVisitedLocation;
 
 import java.time.OffsetDateTime;
 import java.util.List;

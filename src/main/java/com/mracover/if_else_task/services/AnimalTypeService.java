@@ -1,6 +1,6 @@
 package com.mracover.if_else_task.services;
 
-import com.mracover.if_else_task.models.AnimalType;
+import com.mracover.if_else_task.models.animalModels.AnimalType;
 
 public interface AnimalTypeService {
     AnimalType findAnimalTypeById (Long id);

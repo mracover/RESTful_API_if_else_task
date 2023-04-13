@@ -4,10 +4,11 @@ import com.mracover.if_else_task.DTO.request.RequestLocationPointDTO;
 import com.mracover.if_else_task.DTO.response.ResponseLocationPointDTO;
 import com.mracover.if_else_task.mappers.request.RequestLocationPointMapper;
 import com.mracover.if_else_task.mappers.response.ResponseLocationPointMapper;
-import com.mracover.if_else_task.models.LocationPoint;
+import com.mracover.if_else_task.models.animalModels.locationModels.LocationPoint;
 import com.mracover.if_else_task.services.LocationPointService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,13 +39,15 @@ public class LocationPointController {
         return new ResponseEntity<>(responseLocationPointMapper.accountToDTO(locationPoint), HttpStatus.OK);
     }
 
-    @PostMapping()
+    @PreAuthorize(value = "hasAnyAuthority('USER', 'CHIPPER')")
+    @PostMapping
     public ResponseEntity<ResponseLocationPointDTO> addNewLocationPoint(@Valid @RequestBody RequestLocationPointDTO requestLocationPointDTO) {
         LocationPoint creatLocation = locationPointService
                 .addNewLocationPoint(requestLocationPointMapper.dtoToLocationPoint(requestLocationPointDTO));
         return new ResponseEntity<>(responseLocationPointMapper.accountToDTO(creatLocation), HttpStatus.CREATED);
     }
 
+    @PreAuthorize(value = "hasAnyAuthority('USER', 'CHIPPER')")
     @PutMapping("/{pointId}")
     public ResponseEntity<ResponseLocationPointDTO> updateLocationPoint(@PathVariable("pointId") @NotNull @Positive Long id,
                                                              @Valid @RequestBody RequestLocationPointDTO requestLocationPointDTO) {
@@ -54,6 +57,7 @@ public class LocationPointController {
         return new ResponseEntity<>(responseLocationPointMapper.accountToDTO(updLocationPoint), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{pointId}")
     public ResponseEntity<Void> deleteLocationPoint(@PathVariable("pointId") @NotNull @Positive Long id) {
         locationPointService.deleteLocationPointById(id);

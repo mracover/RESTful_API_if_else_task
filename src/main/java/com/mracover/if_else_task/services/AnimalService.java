@@ -1,7 +1,7 @@
 package com.mracover.if_else_task.services;
 
 import com.mracover.if_else_task.DTO.request.animal.RequestPutAnimalTypeDTO;
-import com.mracover.if_else_task.models.Animal;
+import com.mracover.if_else_task.models.animalModels.Animal;
 
 import java.time.OffsetDateTime;
 import java.util.List;
